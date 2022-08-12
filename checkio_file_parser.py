@@ -91,10 +91,28 @@ func_str = ''.join(python_3_readLines[a:b])
 example_str = ''.join(python_3_readLines[c:d])[11:]+end if d != 0 else ''.join(end)[11:]
 
 # Текст заполняемый в новый файл
-python_3_tmpl.write('{% comment %}New initial code template{% endcomment %}\n{% block env %}' + imp_str[:-1] + '{% endblock env %}\n\n{% block start %}\n'
-                    + func_str + "{% endblock start %}\n\n{% block example %}\nprint('Example:')\nprint(" + example_str
-                    + ')\n{% endblock %}\n\n{% block tests %}\n{% for t in tests %}\nassert {% block call %}' + func_name
-                    + "({{t.input|p_args}})\n{% endblock %} == {% block result %}{{t.answer|p}}{% endblock %}{% endfor %}\n{% endblock %}\n\n{% block final %}\n" + 'print("The mission is done! Click \'Check Solution\' to earn rewards!")\n{% endblock final %}\n')
+python_3_tmpl.write(
+'{% comment %}New initial code template{% endcomment %}\n\
+{% block env %}' + imp_str[:-1] + '{% endblock env %}\n\
+\n\
+{% block start %}\n'
++ func_str +\
+"{% endblock start %}\n\
+\n\
+{% block example %}\n\
+print('Example:')\n\
+print(" + example_str + ')\n\
+{% endblock %}\n\
+\n\
+{% block tests %}\n\
+{% for t in tests %}\n\
+assert {% block call %}' + func_name + "({{t.input|p_args}})\n\
+{% endblock %} == {% block result %}{{t.answer|p}}{% endblock %}{% endfor %}\n\
+{% endblock %}\n\
+\n\
+{% block final %}\n"\
++ 'print("The mission is done! Click \'Check Solution\' to earn rewards!")\n\
+{% endblock final %}\n')
 
 python_3_tmpl.close()
 python_3.close()
