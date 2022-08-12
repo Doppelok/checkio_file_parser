@@ -4,8 +4,8 @@
 from os import walk
 
 
-directory_name = 'C:\\Users\\Infotech_5\\OneDrive\\Документы\\GitHub'  # Всавить путь к папке мисси
-mission_name = 'checkio-mission-cut-sentence'  # Всавить название миссии
+directory_name = 'C:\\Users\\Infotech_5\\OneDrive\\Документы\\GitHub'  # Вставить путь к папке миссии
+mission_name = 'checkio-mission-cut-sentence'  # Вставить название миссии
 
 
 def example_cutter(exmpl):  # Функция для обрезки экзампла в файле js_node.tmpl
@@ -20,8 +20,8 @@ def example_cutter(exmpl):  # Функция для обрезки экзамп�
 
 
 def task_desc_change(path):  # Функция для изменения строчек теста в такс-дискрипте на новую строку next-API
-    task_descrption = open(f'{path}', mode='r', encoding='utf-8')
-    lines = task_descrption.readlines()
+    task_description = open(f'{path}', mode='r', encoding='utf-8')
+    lines = task_description.readlines()
     if_str = ['<pre class="brush: {% if is_js %}javascript{% else %}python{% endif %}">{{init_code_tmpl}}</pre>\n']
     task_start = 0
     task_end = 0
@@ -31,10 +31,10 @@ def task_desc_change(path):  # Функция для изменения стро
         elif lines[i].startswith('{% endif'):
             task_end = i
     lines[task_start:task_end+1] = if_str  # Заменяем ненужный кусок на актуальный код
-    task_descrption.close()
-    task_descrption = open(rf'{path}', mode='w', encoding='utf-8')
-    task_descrption.write(''.join(lines))  # Заново открытый файл перетираем корректным кодом
-    task_descrption.close()
+    task_description.close()
+    task_description = open(rf'{path}', mode='w', encoding='utf-8')
+    task_description.write(''.join(lines))  # Заново открытый файл перетираем корректным кодом
+    task_description.close()
     print(f'{path} - OK')
 
 
@@ -42,12 +42,14 @@ def task_desc_change(path):  # Функция для изменения стро
 # Парсинг файла init.js
 # Просто перетираем файл на новый код
 init_js = open(f"{directory_name}\\{mission_name}\\editor\\animation\\init.js", 'w')
-init_js.write(r'''requirejs(['ext_editor_io2', 'jquery_190'],
-    function (extIO, $) {
-        var io = new extIO({});
-        io.start();
-    }
-);''')
+init_js.write(
+r'''requirejs(['ext_editor_io2', 'jquery_190'],
+        function (extIO, $) {
+            var io = new extIO({});
+            io.start();
+        }
+    );
+''')
 init_js.close()
 print('\033init.js - OK')
 
@@ -66,23 +68,23 @@ c = 0
 d = 0  # Markers for 'assert' search
 func_name = ''  # Название функции для вставки в код
 
-for i in range(len(python_3_readLines)):
-    if python_3_readLines[i].startswith('from') or python_3_readLines[i].startswith('import'):
-        imp_str += python_3_readLines[i]  # Ищем по тексту импортированные библиотеки
-    elif python_3_readLines[i].startswith('def'):
-        a = i
-        bracket = python_3_readLines[i].index('(')   # Начало initial кода функции
-        func_name = python_3_readLines[i][4:bracket]
-    elif python_3_readLines[i].startswith('if'):
-        b = i  # Конец initial кода функции
-    elif python_3_readLines[i].startswith('    assert'):
-        c = i  # Начало кода в print(func(...))
-        if '==' in python_3_readLines[i]:
-            end = python_3_readLines[i][:python_3_readLines[i].index(' ==')]
+for ind, line in enumerate(python_3_readLines):
+    if line.startswith('from') or line.startswith('import'):
+        imp_str += line  # Ищем по тексту импортированные библиотеки
+    elif line.startswith('def'):
+        a = ind
+        bracket = line.index('(')   # Начало initial кода функции
+        func_name = line[4:bracket]
+    elif line.startswith('if'):
+        b = ind  # Конец initial кода функции
+    elif line.startswith('    assert'):
+        c = ind  # Начало кода в print(func(...))
+        if '==' in line:
+            end = line[:line.index(' ==')]
             break
-    elif '==' in python_3_readLines[i]:
-        d = i  # Конец кода в print(func(...))
-        end = python_3_readLines[i][:python_3_readLines[i].index(' ==')]  # Отрезать часть "ожидаемый" ответ
+    elif '==' in line:
+        d = ind  # Конец кода в print(func(...))
+        end = line[:line.index(' ==')]  # Отрезать часть "ожидаемый" ответ
         break  # Примеров может быть много, чтобы забрать самый первый пример, мы выходим на данном моменте из цикла
 
 func_str = ''.join(python_3_readLines[a:b])
