@@ -135,36 +135,36 @@ js_d = 0  # Markers for 'assert' search
 js_func_name = ''  # Название функции для вставки в код
 js_ex = ''
 
-for i in range(len(js_node_readLines)):
-    if js_node_readLines[i].startswith('import'):
-        if not js_node_readLines[i].startswith('import assert from "assert"'):
-            js_imp_str += js_node_readLines[i]  # Ищем по тексту импортированные библиотеки
-    elif js_node_readLines[i].startswith('function'):
-        js_a = i
-        js_bracket = js_node_readLines[i].index('(')   # Начало initial кода функции
-        js_func_name = js_node_readLines[i][9:js_bracket]
-    elif js_node_readLines[i].startswith("}"):
-        js_b = i + 1  # Конец initial кода функции
-    elif js_node_readLines[i].startswith("assert"):  # Начало кода console.log(func(...))
+for ind, line in enumerate(js_node_readLines):
+    if line.startswith('import'):
+        if not line.startswith('import assert from "assert"'):
+            js_imp_str += line  # Ищем по тексту импортированные библиотеки
+    elif line.startswith('function'):
+        js_a = ind
+        js_bracket = line.index('(')   # Начало initial кода функции
+        js_func_name = line[9:js_bracket]
+    elif line.startswith("}"):
+        js_b = ind + 1  # Конец initial кода функции
+    elif line.startswith("assert"):  # Начало кода console.log(func(...))
         if js_count == 1:  # На втором кругу попадаем сюда, получаем конец первого примера и выходим из цикла
-            js_d = i
+            js_d = ind
             js_ex = ''.join(js_node_readLines[js_c:js_d])[13:]
             break
-        js_c = i  # Начало кода из первого примера
+        js_c = ind  # Начало кода из первого примера
         js_count += 1
-    elif js_node_readLines[i].startswith("    assert.equal"):  # Начало кода console.log(func(...)), с другим маркером
+    elif line.startswith("    assert.equal"):  # Начало кода console.log(func(...)), с другим маркером
         if js_count == 1:  # На втором кругу попадаем сюда, получаем конец первого примера и выходим из цикла
-            js_d = i
+            js_d = ind
             js_ex = ''.join(js_node_readLines[js_c:js_d])[17:]
             break
-        js_c = i  # Начало кода из первого примера
+        js_c = ind  # Начало кода из первого примера
         js_count += 1
-    elif js_node_readLines[i].startswith("    assert.deepEqual"):  # Начало кода console.log(func(...)), с другим маркером
+    elif line.startswith("    assert.deepEqual"):  # Начало кода console.log(func(...)), с другим маркером
         if js_count == 1:  # На втором кругу попадаем сюда, получаем конец первого примера и выходим из цикла
-            js_d = i
+            js_d = ind
             js_ex = ''.join(js_node_readLines[js_c:js_d])[21:]
             break
-        js_c = i  # Начало кода из первого примера
+        js_c = ind  # Начало кода из первого примера
         js_count += 1
 
 js_func_str = ''.join(js_node_readLines[js_a:js_b])
