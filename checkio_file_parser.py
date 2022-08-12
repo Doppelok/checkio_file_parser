@@ -25,11 +25,11 @@ def task_desc_change(path):  # Функция для изменения стро
     if_str = ['<pre class="brush: {% if is_js %}javascript{% else %}python{% endif %}">{{init_code_tmpl}}</pre>\n']
     task_start = 0
     task_end = 0
-    for i in range(len(lines)):  # Определяем границы искомого куска кода по "ключевым" меткам '{% if' и '{% endif'
-        if lines[i].startswith('{% if'):
-            task_start = i
-        elif lines[i].startswith('{% endif'):
-            task_end = i
+    for ind, line in enumerate(lines):  # Определяем границы искомого куска кода по "ключевым" меткам '{% if' и '{% endif'
+        if line.startswith('{% if'):
+            task_start = ind
+        elif line.startswith('{% endif'):
+            task_end = ind
     lines[task_start:task_end+1] = if_str  # Заменяем ненужный кусок на актуальный код
     task_description.close()
     task_description = open(rf'{path}', mode='w', encoding='utf-8')
