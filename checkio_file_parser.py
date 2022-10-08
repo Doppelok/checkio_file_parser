@@ -2,11 +2,11 @@
 Парсер для файлов next-API платформы Checkio
 '''
 from os import walk
-from googletrans import Translator
+# from googletrans import Translator
 
 
 directory_name = 'C:\\Users\\Infotech_5\\OneDrive\\Документы\\GitHub'  # Всавить путь к папке мисси
-mission_name = 'checkio-mission-bigger-price'  # Всавить название миссии
+mission_name = input('Input mission name (name1-name2-name3): ')  # Всавить название миссии
 
 
 def example_cutter(exmpl):  # Функция для обрезки экзампла в файле js_node.tmpl
@@ -30,9 +30,9 @@ def task_desc_change(path):  # Функция для изменения стро
         task_start = 0
         task_end = 0
         for i in range(len(lines)):  # Определяем границы искомого куска кода по "ключевым" меткам '{% if' и '{% endif'
-            if lines[i].startswith('{% if'):
+            if lines[i].strip().startswith('{% if'):
                 task_start = i
-            elif lines[i].startswith('{% endif'):
+            elif lines[i].strip().startswith('{% endif'):
                 task_end = i
         lines[task_start:task_end+1] = if_str  # Заменяем ненужный кусок на актуальный код
     task_descrption.close()
@@ -205,7 +205,7 @@ api.add_listener(
         tests=TESTS,
         # checker=to_list,
         function_name={
-            "python":"''' + func_name + '''",
+            "python": "''' + func_name + '''",
             "js": "''' + js_func_name + '''"
         },
         cover_code={
@@ -230,32 +230,3 @@ for i in walking:
             if u.startswith('task_description.html'):  # Берем нужный нам файл и крепим к директории
                 path_info = i[0] + '\\' + u
                 task_desc_change(path_info)  # Вызываем функцию передавая ей каждый раз новый путь для изменений
-
-
-text_1 = walk(f'{directory_name}\\{mission_name}\\hints')
-text_2 = open(f"{directory_name}\\{mission_name}\\hints\\{list(text_1)[0][2][0]}", 'r')
-texts = text_2.read()
-new_text = ''''''
-trns = Translator()
-
-for i in texts.split('\n'):
-    if i.strip().startswith('<'):
-        continue
-    else:
-        new_text += i + '\n'
-
-text_2.close()
-print('HINTS:\n', trns.translate(new_text, src='en', dest='uk').text)
-
-task_desc_trns = open(f"{directory_name}\\{mission_name}\\info\\task_description.html", 'r')
-task_2 = task_desc_trns.read()
-new_text = ''''''
-
-for i in task_2.split('\n'):
-    if i.strip().startswith('<'):
-        continue
-    else:
-        new_text += i + '\n'
-
-task_desc_trns.close()
-print('-'*200, '\nTASK:\n', trns.translate(new_text, src='en', dest='uk').text)
